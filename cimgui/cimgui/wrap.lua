@@ -3982,3 +3982,11 @@ function M.color255(r,g,b,a)
         bit.lshift(a, 24)
     )
 end
+
+---@alias CdataWrapper<T> {[0]:T}
+
+---@param initial boolean
+---@return CdataWrapper<boolean>
+function M.bool(initial)
+    return ffi.new("bool[1]", initial)
+end

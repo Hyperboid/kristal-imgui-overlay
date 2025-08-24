@@ -10,9 +10,9 @@ function ExampleAppCustomRendering:init()
     self.canvas = {
         points = {}; ---@type imgui.ImVec2[]
         scrolling = imgui.ImVec2_Nil();
-        opt_enable_grid = ffi.new("bool[1]", true); ---@type [boolean]
-        opt_enable_context_menu = ffi.new("bool[1]", true); ---@type [boolean]
-        adding_line = ffi.new("bool[1]", false); ---@type [boolean]
+        opt_enable_grid = imgui.bool(true);
+        opt_enable_context_menu = imgui.bool(true);
+        adding_line = imgui.bool(false);
     }
 end
 
@@ -59,20 +59,20 @@ function ExampleAppCustomRendering:show()
             local mouse_pos_in_canvas = imgui.ImVec2_Float(io.MousePos.x - origin.x, io.MousePos.y - origin.y); ---@type imgui.ImVec2
 
             -- Add first and second point
-            if (is_hovered and not self.canvas.adding_line and imgui.IsMouseClicked(imgui.ImGuiMouseButton_Left)) then
+            if (is_hovered and not self.canvas.adding_line[0] and imgui.IsMouseClicked(imgui.ImGuiMouseButton_Left)) then
                 table.insert(self.canvas.points, mouse_pos_in_canvas);
                 table.insert(self.canvas.points, mouse_pos_in_canvas);
-                self.canvas.adding_line = true;
+                self.canvas.adding_line[0] = true;
             end
-            if (self.canvas.adding_line) then
+            if (self.canvas.adding_line[0]) then
                 self.canvas.points[#self.canvas.points] = mouse_pos_in_canvas
                 if (not imgui.IsMouseDown(imgui.ImGuiMouseButton_Left)) then
-                    self.canvas.adding_line = false;
+                    self.canvas.adding_line[0] = false;
                 end
             end
             -- Pan (we use a zero mouse threshold when there's no context menu)
             -- You may decide to make that threshold dynamic based on whether the mouse is hovering something etc.
-            local mouse_threshold_for_pan = self.canvas.opt_enable_context_menu and -1.0 or 0.0;
+            local mouse_threshold_for_pan = self.canvas.opt_enable_context_menu[0] and -1.0 or 0.0;
             if (is_active and imgui.IsMouseDragging(imgui.ImGuiMouseButton_Right, mouse_threshold_for_pan)) then
                 self.canvas.scrolling.x = self.canvas.scrolling.x + io.MouseDelta.x;
                 self.canvas.scrolling.y = self.canvas.scrolling.y + io.MouseDelta.y;
@@ -80,15 +80,15 @@ function ExampleAppCustomRendering:show()
 
             -- Context menu (under default mouse threshold)
             local drag_delta = imgui.GetMouseDragDelta(imgui.ImGuiMouseButton_Right);
-            if (self.canvas.opt_enable_context_menu and drag_delta.x == 0.0 and drag_delta.y == 0.0) then
+            if (self.canvas.opt_enable_context_menu[0] and drag_delta.x == 0.0 and drag_delta.y == 0.0) then
                 imgui.OpenPopupOnItemClick("context", imgui.ImGuiPopupFlags_MouseButtonRight);
             end
             if (imgui.BeginPopup("context")) then
-                if (self.canvas.adding_line) then
+                if (self.canvas.adding_line[0]) then
                     table.remove(self.canvas.points, #self.canvas.points)
                     table.remove(self.canvas.points, #self.canvas.points)
                 end
-                self.canvas.adding_line = false;
+                self.canvas.adding_line[0] = false;
                 if (imgui.MenuItem_Bool("Remove one", nil, false, #self.canvas.points > 0)) then
                     table.remove(self.canvas.points, #self.canvas.points)
                     table.remove(self.canvas.points, #self.canvas.points)
@@ -101,7 +101,7 @@ function ExampleAppCustomRendering:show()
 
             -- Draw grid + all lines in the canvas
             draw_list:PushClipRect(canvas_p0, canvas_p1, true);
-            if (self.canvas.opt_enable_grid) then
+            if (self.canvas.opt_enable_grid[0]) then
                 local GRID_STEP = 64.0;
                 for x = self.canvas.scrolling.x % GRID_STEP, canvas_sz.x, GRID_STEP do
                     draw_list:AddLine(imgui.ImVec2_Float(canvas_p0.x + x, canvas_p0.y), imgui.ImVec2_Float(canvas_p0.x + x, canvas_p1.y), imgui.color255(200, 200, 200, 40));
