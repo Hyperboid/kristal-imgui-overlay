@@ -1512,18 +1512,19 @@ end
 M.ImGuiTextRange = ImGuiTextRange
 ffi.metatype("ImGuiTextRange", ImGuiTextRange)
 
+---@class imgui.ImGuiViewport
 local ImGuiViewport = ImGuiViewport or {}
 ImGuiViewport.__index = ImGuiViewport
-ImGuiViewport["GetCenter"] = ImGuiViewport["GetCenter"]  or function(i1)
+ImGuiViewport.GetCenter = ImGuiViewport.GetCenter or function(self)
     jit.off(true)
     local o1 = M.ImVec2_Nil()
-    local out = C.ImGuiViewport_GetCenter(o1, i1)
+    local out = C.ImGuiViewport_GetCenter(o1, self)
     return o1, out
 end
-ImGuiViewport["GetWorkCenter"] = ImGuiViewport["GetWorkCenter"]  or function(i1)
+ImGuiViewport.GetWorkCenter = ImGuiViewport.GetWorkCenter or function(self)
     jit.off(true)
     local o1 = M.ImVec2_Nil()
-    local out = C.ImGuiViewport_GetWorkCenter(o1, i1)
+    local out = C.ImGuiViewport_GetWorkCenter(o1, self)
     return o1, out
 end
 local mt = getmetatable(ImGuiViewport) or {}

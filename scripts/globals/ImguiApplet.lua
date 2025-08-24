@@ -8,7 +8,7 @@ function ImguiApplet:init(title, flags)
     self.unique_id = self.id
     self.flags = flags or 0
     self.closable = true
-    self.closebutton_pointer = ffi.new('bool[1]', true)
+    self.closebutton_pointer = ffi.new('bool[1]', false)
     ---@type [number,number]?
     self.initial_size = nil
 end

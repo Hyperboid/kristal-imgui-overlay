@@ -11,16 +11,18 @@ function lib:preInit()
 end
 
 function lib:onRegistered()
-    self.applets = {} ---@type table<string, ImguiApplet>
     self.applet_classes = {}
     for _,path,applet in Registry.iterScripts("applets") do
         assert(applet ~= nil, '"applets/'..path..'.lua" does not return value')
         applet.id = applet.id or path
         self.applet_classes[applet.id] = applet
     end
+end
+
+function lib:init()
+    self.applets = {} ---@type table<string, ImguiApplet>
     for key, value in pairs(self.applet_classes) do
         self.applets[key] = value()
-        self.applets[key]:setOpen(false)
     end
 end
 
