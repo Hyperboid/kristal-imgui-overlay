@@ -47,7 +47,7 @@ function Imgui.firstInit()
 end
 
 function Imgui.init()
-    if Imgui.active == nil then
+    if Imgui.lib == nil then
         Imgui.firstInit()
     end
     if not Imgui.initialized then
