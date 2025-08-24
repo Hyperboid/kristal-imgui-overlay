@@ -88,7 +88,7 @@ function Imgui.draw()
 end
 
 function Imgui.update()
-    if not Imgui.active then
+    if not (Imgui.active and Imgui.initialized) then
         return
     end
     Imgui.lib.love.Update(DT)
