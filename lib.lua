@@ -92,6 +92,14 @@ function Imgui.update()
         return
     end
     Imgui.lib.love.Update(DT)
+    if Imgui.lib.love.GetWantCaptureKeyboard() then
+        love.keyboard.setTextInput(true)
+        Imgui.captured_keyboard = true
+    end
+    if Imgui.captured_keyboard and not Imgui.lib.love.GetWantCaptureKeyboard() then
+        love.keyboard.setTextInput(false)
+        Imgui.captured_keyboard = false
+    end
     Imgui.lib.NewFrame()
     Imgui.first_update = true
 end
