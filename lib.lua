@@ -8,6 +8,7 @@ Imgui.first_update = false
 
 function lib:preInit()
     if not Imgui.initialized then
+        Imgui.active = true
         ---@type imgui
         Imgui.lib = libRequire("imgui", "cimgui.cimgui.init")
 
@@ -26,7 +27,7 @@ end
 function Imgui.preDraw() end
 
 function Imgui.draw()
-    if not Imgui.first_update then
+    if not (Imgui.first_update and Imgui.active) then
         return
     end
     if not Kristal.callEvent("drawImgui") then
@@ -37,9 +38,18 @@ function Imgui.draw()
 end
 
 function Imgui.update()
+    if not Imgui.active then
+        return
+    end
     Imgui.lib.love.Update(DT)
     Imgui.lib.NewFrame()
     Imgui.first_update = true
+end
+
+function lib:onKeyPressed(key)
+    if key == "f10" then
+        Imgui.active = not Imgui.active
+    end
 end
 
 return lib

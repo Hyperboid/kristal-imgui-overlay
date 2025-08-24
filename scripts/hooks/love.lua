@@ -45,21 +45,21 @@ end
 
 function lv.keypressed(key, ...)
     imgui.love.KeyPressed(key)
-    if not imgui.love.GetWantCaptureKeyboard() then
+    if not Imgui.active or not imgui.love.GetWantCaptureKeyboard() then
         return super.keypressed(key, ...)
     end
 end
 
 function lv.keyreleased(key, ...)
     imgui.love.KeyReleased(key)
-    if not imgui.love.GetWantCaptureKeyboard() then
+    if not Imgui.active or not imgui.love.GetWantCaptureKeyboard() then
         return super.keyreleased(key, ...)
     end
 end
 
 function lv.textinput(t)
     imgui.love.TextInput(t)
-    if not imgui.love.GetWantCaptureKeyboard() then
+    if not Imgui.active or not imgui.love.GetWantCaptureKeyboard() then
         return super.textinput(t)
     end
 end
