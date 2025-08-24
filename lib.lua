@@ -104,10 +104,6 @@ function Imgui.update()
     Imgui.first_update = true
 end
 
-function Imgui.reboot()
-    lib:unload()
-end
-
 function lib:unload()
     Imgui.first_update = false
     Imgui.initialized = false
