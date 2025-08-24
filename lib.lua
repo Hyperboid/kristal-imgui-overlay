@@ -60,6 +60,12 @@ function Imgui.init()
             Imgui.lib.ImGuiConfigFlags_NavEnableGamepad,
             Imgui.lib.ImGuiConfigFlags_DockingEnable,
         0)
+        -- TODO: Add a proper config for this. I personally prefer
+        -- light theme since it's useful with the offset editor on dark
+        -- world sprites, but I realise not everyone feels the same way.
+        if Kristal.Config["forceImguiLibLightThemeThisIsTempIdkHowToDoThisBetter"] then
+            Imgui.lib.StyleColorsLight()
+        end
     end
 end
 

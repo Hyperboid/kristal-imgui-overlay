@@ -317,12 +317,19 @@ ImDrawList.AddQuadFilled = ImDrawList.AddQuadFilled or function(self, i2, i3, i4
     local out = C.ImDrawList_AddQuadFilled(self, i2, i3, i4, i5, i6)
     return out
 end
-ImDrawList.AddRect = ImDrawList.AddRect or function(self, i2, i3, i4, i5, i6, i7)
+---@param self imgui.ImDrawList
+---@param p_min imgui.ImVec2
+---@param p_max imgui.ImVec2
+---@param col integer
+---@param rounding number?
+---@param flags integer?
+---@param thickness number?
+ImDrawList.AddRect = ImDrawList.AddRect or function(self, p_min, p_max, col, rounding, flags, thickness)
     jit.off(true)
-    if i5 == nil then i5 = 0.0 end
-    if i6 == nil then i6 = 0 end
-    if i7 == nil then i7 = 1.0 end
-    local out = C.ImDrawList_AddRect(self, i2, i3, i4, i5, i6, i7)
+    if rounding == nil then rounding = 0.0 end
+    if flags == nil then flags = 0 end
+    if thickness == nil then thickness = 1.0 end
+    local out = C.ImDrawList_AddRect(self, p_min, p_max, col, rounding, flags, thickness)
     return out
 end
 ImDrawList.AddRectFilled = ImDrawList.AddRectFilled or function(self, p_min, p_max, col, rounding, flags)
