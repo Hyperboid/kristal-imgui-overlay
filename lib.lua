@@ -8,6 +8,20 @@ Imgui.first_update = false
 
 function lib:preInit()
     if not Imgui.initialized then
+        -- this is the worst thing i've ever done
+        package.path = package.path .. ";"..love.filesystem.getSaveDirectory().."/?.lua"
+        package.cpath = package.cpath .. ";"..love.filesystem.getSaveDirectory().."/?."..((function()
+            local os = require("ffi").os
+            if os == "Windows" then
+                return "dll"
+            elseif os == "Linux" then
+                return "so"
+            elseif os == "OSX" then -- TODO: Is "OSX" correct?
+                return "dylib"
+            else
+                error("\"" ..os.."\" isn't supported, sorry! If you're a player, tell the dev to remove the imgui stuff.")
+            end
+        end)())
         Imgui.active = true
         ---@type imgui
         Imgui.lib = libRequire("imgui", "cimgui.cimgui.init")
