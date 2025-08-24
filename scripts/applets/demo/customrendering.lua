@@ -1,9 +1,9 @@
 local imgui = Imgui.lib
 local ffi = require("ffi")
 local bit = require("bit")
----@class ExampleAppCustomRendering: ImguiMiniApp
-local ExampleAppCustomRendering, super = Class(ImguiMiniApp, "ExampleAppCustomRendering")
----@cast super ImguiMiniApp
+---@class ExampleAppCustomRendering: ImguiApplet
+local ExampleAppCustomRendering, super = Class(ImguiApplet, "ExampleAppCustomRendering")
+---@cast super ImguiApplet
 
 function ExampleAppCustomRendering:init()
     super.init(self, "Example: Custom Rendering (New! Funky Mode!)")

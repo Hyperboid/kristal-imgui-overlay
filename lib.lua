@@ -10,6 +10,20 @@ function lib:preInit()
     Imgui.init()
 end
 
+function lib:onRegistered()
+    self.applets = {} ---@type table<string, ImguiApplet>
+    self.applet_classes = {}
+    for _,path,applet in Registry.iterScripts("applets") do
+        assert(applet ~= nil, '"applets/'..path..'.lua" does not return value')
+        applet.id = applet.id or path
+        self.applet_classes[applet.id] = applet
+    end
+    for key, value in pairs(self.applet_classes) do
+        self.applets[key] = value()
+        self.applets[key]:setOpen(false)
+    end
+end
+
 function Imgui.firstInit()
     -- this is the worst thing i've ever done
     package.path = package.path .. ";"..love.filesystem.getSaveDirectory().."/?.lua"
@@ -54,7 +68,20 @@ function Imgui.draw()
         return
     end
     if not Kristal.callEvent("drawImgui") then
-        Imgui.lib.ShowDemoWindow()
+        if Imgui.lib.BeginMainMenuBar() then
+            if Imgui.lib.BeginMenu("Applets") then
+                for index, value in pairs(lib.applets) do
+                    if Imgui.lib.MenuItem_Bool(value:getTitle(), nil, value:isOpen()) then
+                        value:setOpen(not value:isOpen())
+                    end
+                end
+                Imgui.lib.EndMenu()
+            end
+            Imgui.lib.EndMainMenuBar()
+        end
+        for key, value in pairs(lib.applets) do
+            value:fullShow()
+        end
     end
     Imgui.lib.Render()
     Imgui.lib.love.RenderDrawLists()
