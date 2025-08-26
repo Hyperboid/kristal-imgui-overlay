@@ -1,6 +1,7 @@
 local imgui = Imgui.lib
 local ffi = require("ffi")
 ---@class ImguiApplet : Class
+---@field showing boolean
 local ImguiApplet, super = Class(nil, "ImguiApplet")
 
 function ImguiApplet:init(title, flags)
@@ -11,6 +12,7 @@ function ImguiApplet:init(title, flags)
     self.closebutton_pointer = ffi.new('bool[1]', false)
     ---@type [number,number]?
     self.initial_size = nil
+    self.showing = false
 end
 
 function ImguiApplet:isOpen()
@@ -26,6 +28,8 @@ function ImguiApplet:fullShow()
     if not self:isOpen() then
         return
     end
+    self:preShow()
+    self.showing = true
     if self.initial_size then
         imgui.SetNextWindowSize(self.initial_size, imgui.ImGuiCond_FirstUseEver);
     end
@@ -33,7 +37,12 @@ function ImguiApplet:fullShow()
         self:show()
     end
     imgui.End()
+    self.showing = false
+    self:postShow()
 end
+
+function ImguiApplet:preShow() end
+function ImguiApplet:postShow() end
 
 function ImguiApplet:show()
     imgui.Button("Hello World")
