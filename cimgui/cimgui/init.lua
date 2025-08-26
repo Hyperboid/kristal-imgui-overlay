@@ -16,6 +16,7 @@ require(path .. "enums")
 require(path .. "wrap")
 require(path .. "love")
 require(path .. "shortcuts")
+require(path .. "util")
 
 -- remove access to M._common
 M._common = nil
