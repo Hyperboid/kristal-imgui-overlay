@@ -16,6 +16,7 @@ local env = {
 setfenv(1, env)
 
 local path = (...):gsub("[^%.]*$", "")
+---@class (partial) imgui
 local M = require(path .. "master")
 local ffi = require("ffi")
 local bit = require("bit")
