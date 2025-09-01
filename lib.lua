@@ -41,6 +41,7 @@ function Imgui.firstInit()
             error("\"" ..os.."\" isn't supported, sorry! If you're a player, tell the dev to remove the imgui stuff.")
         end
     end)())
+    ---@type boolean
     Imgui.active = true
     ---@type imgui
     Imgui.lib = libRequire("imgui", "cimgui.cimgui.init")
@@ -72,10 +73,10 @@ end
 function Imgui.preDraw() end
 
 function Imgui.draw()
-    if not (Imgui.first_update and Imgui.active) then
+    if not Imgui.first_update then
         return
     end
-    if not Kristal.callEvent("drawImgui") then
+    if Imgui.active and not Kristal.callEvent("drawImgui") then
         if Imgui.lib.BeginMainMenuBar() then
             if Imgui.lib.BeginMenu("Applets") then
                 for index, value in pairs(lib.applets) do
@@ -96,7 +97,7 @@ function Imgui.draw()
 end
 
 function Imgui.update()
-    if not (Imgui.active and Imgui.initialized) then
+    if not (Imgui.initialized) then
         return
     end
     Imgui.lib.love.Update(DT)
