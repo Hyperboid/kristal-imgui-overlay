@@ -72,25 +72,60 @@ end
 
 function Imgui.preDraw() end
 
+function lib:show()
+    if self.error_state then
+        self:showError()
+    else
+        xpcall(Imgui.showNormal, function (msg)
+            self.error_state = debug.traceback(msg)
+            Imgui.lib.love.Shutdown()
+            Imgui.initialized = false
+            Imgui.first_update = false
+            Imgui.init()
+        end)
+    end
+end
+
+function lib:showError()
+    Imgui.lib.Text(self.error_state)
+    if Imgui.lib.Button("Ignore") then
+        self.error_state = nil
+    end
+    Imgui.lib.SameLine()
+    if Imgui.lib.Button("Restart Applets") then
+        self.applets = {}
+        for key, value in pairs(self.applet_classes) do
+            self.applets[key] = value()
+        end
+        self.error_state = nil
+    end
+end
+
+function Imgui.showNormal()
+    if not (Imgui.active and not Kristal.callEvent("drawImgui")) then return end
+    if Imgui.lib.BeginMainMenuBar() then
+        if Imgui.lib.BeginMenu("Applets") then
+            for index, value in pairs(lib.applets) do
+                if Imgui.lib.MenuItem_Bool(value:getTitle(), nil, value:isOpen()) then
+                    value:setOpen(not value:isOpen())
+                end
+            end
+            Imgui.lib.EndMenu()
+        end
+        Imgui.lib.EndMainMenuBar()
+    end
+    for key, value in pairs(lib.applets) do
+        value:fullShow()
+    end
+end
+
 function Imgui.draw()
     if not Imgui.first_update then
         return
     end
-    if Imgui.active and not Kristal.callEvent("drawImgui") then
-        if Imgui.lib.BeginMainMenuBar() then
-            if Imgui.lib.BeginMenu("Applets") then
-                for index, value in pairs(lib.applets) do
-                    if Imgui.lib.MenuItem_Bool(value:getTitle(), nil, value:isOpen()) then
-                        value:setOpen(not value:isOpen())
-                    end
-                end
-                Imgui.lib.EndMenu()
-            end
-            Imgui.lib.EndMainMenuBar()
-        end
-        for key, value in pairs(lib.applets) do
-            value:fullShow()
-        end
+    lib:show()
+    if not Imgui.first_update then
+        return
     end
     Imgui.lib.Render()
     Imgui.lib.love.RenderDrawLists()
