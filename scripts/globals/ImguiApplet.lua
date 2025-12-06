@@ -1,3 +1,4 @@
+if not Imgui then return {} end
 local imgui = Imgui.lib
 local ffi = require("ffi")
 ---@class ImguiApplet : Class

@@ -1,5 +1,6 @@
 ---@class love : love
 local lv, super = Utils.hookScript(love)
+if not Imgui then return lv end
 
 local imgui = Imgui.lib
 

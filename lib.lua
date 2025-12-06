@@ -48,8 +48,18 @@ function Imgui.firstInit()
     package.cpath = package.cpath .. ";"..new_cpath
     ---@type boolean
     Imgui.active = true
+    local ok, imlib = xpcall(libRequire, debug.traceback, "imgui", "cimgui.cimgui.init")
+    if not ok then
+        local info = lib.info
+        TableUtils.clear(lib)
+        lib.info = info
+        _G.Imgui = nil
+        Imgui.initialized = true
+        Kristal.Console:error(imlib)
+        return
+    end
     ---@type imgui
-    Imgui.lib = libRequire("imgui", "cimgui.cimgui.init")
+    Imgui.lib = imlib
 end
 
 function Imgui.init()
