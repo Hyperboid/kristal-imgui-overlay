@@ -29,8 +29,8 @@ end
 function Imgui.firstInit()
     -- this is the worst thing i've ever done
     package.path = package.path .. ";"..love.filesystem.getSaveDirectory().."/?.lua"
-    package.cpath = package.cpath .. ";"..love.filesystem.getSaveDirectory().."/?."..((function()
-        local os = require("ffi").os
+    local os = require("ffi").os
+    local ext = ((function()
         if os == "Windows" then
             return "dll"
         elseif os == "Linux" then
@@ -41,6 +41,11 @@ function Imgui.firstInit()
             error("\"" ..os.."\" isn't supported, sorry! If you're a player, tell the dev to remove the imgui stuff.")
         end
     end)())
+    local new_cpath = love.filesystem.getSaveDirectory().."/?."..ext
+    if os == "Windows" then
+        new_cpath = new_cpath:gsub("/", "\\")
+    end
+    package.cpath = package.cpath .. ";"..new_cpath
     ---@type boolean
     Imgui.active = true
     ---@type imgui
