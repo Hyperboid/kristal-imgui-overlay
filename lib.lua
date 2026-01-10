@@ -24,6 +24,16 @@ function lib:init()
     for key, value in pairs(self.applet_classes) do
         self.applets[key] = value()
     end
+    -- TODO: Remove this when Kristal calls unload after errors
+    HookSystem.hook(Kristal, "errorHandler", function(orig, ...)
+        local loop = orig(...)
+        xpcall(function()
+            self:unload()
+        end, function(msg)
+            print("Failed to unload imgui after an error:\n" .. debug.traceback(tostring(msg)))
+        end)
+        return loop
+    end)
 end
 
 function Imgui.firstInit()
@@ -164,6 +174,9 @@ function Imgui.update()
 end
 
 function lib:unload()
+    if not Imgui.initialized then
+        return
+    end
     Imgui.first_update = false
     Imgui.initialized = false
     Imgui.lib.love.Shutdown()
